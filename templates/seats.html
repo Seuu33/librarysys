@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}座位预约 - 图书馆管理系统{% endblock %}
+{% block content %}
+{% if banned %}
+<div class="flash error">你因超时未签到被封禁，{{ banned_until.strftime('%Y-%m-%d %H:%M') }} 后才能预约</div>
+{% endif %}
+
+{% if my_active %}
+<div class="card">
+  <h2>我的座位</h2>
+  <p style="font-size:15px">{{ my_active.area }} · {{ my_active.seat_no }}
+    {% if my_active.status == 'checked_in' %}
+      <span class="tag tag-free">已签到</span>
+    {% else %}
+      <span class="tag tag-mine">待签到</span>
+    {% endif %}
+  </p>
+  {% if my_active.status == 'reserved' %}
+  <p class="muted">签到截止：{{ my_active.expire_time.strftime('%H:%M') }}（超时记违约并封禁1天）</p>
+  <a class="btn btn-green"
+     href="{{ url_for('seat_scan', seat_code=my_active.seat_code) }}">模拟扫码签到（演示）</a>
+  <form class="inline-form" method="post" action="{{ url_for('cancel_reservation', res_id=my_active.id) }}">
+    <button class="btn btn-gray" type="submit">取消预约</button>
+  </form>
+  {% else %}
+  <form class="inline-form" method="post" action="{{ url_for('leave_seat', res_id=my_active.id) }}">
+    <button class="btn btn-red" type="submit">签退离馆</button>
+  </form>
+  {% endif %}
+</div>
+{% endif %}
+
+{% for area, seat_list in areas.items() %}
+<div class="card">
+  <h2>{{ area }}（空 {{ seat_list | selectattr('cur_status', 'none') | list | length }} / {{ seat_list | length }}）</h2>
+  <div class="seat-grid">
+    {% for s in seat_list %}
+    {% if not s.cur_status %}
+    <div class="seat">
+      <b>{{ s.seat_no }}</b><br><span class="tag tag-free">空闲</span>
+      {% if me.role == 'reader' and not banned and not my_active %}
+      <form method="post" action="{{ url_for('reserve_seat', seat_id=s.id) }}">
+        <button class="btn" type="submit">预约</button>
+      </form>
+      {% endif %}
+    </div>
+    {% elif my_active and my_active.seat_id == s.id %}
+    <div class="seat mine"><b>{{ s.seat_no }}</b><br><span class="tag tag-mine">我的</span></div>
+    {% else %}
+    <div class="seat occupied"><b>{{ s.seat_no }}</b><br>
+      <span class="tag tag-busy">{{ '占用' if s.cur_status == 'checked_in' else '已预约' }}</span></div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

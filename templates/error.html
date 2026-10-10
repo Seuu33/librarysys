@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card" style="text-align:center;padding:60px">
+  <h1 style="font-size:48px;color:#bdc3c7">{{ code }}</h1>
+  <p class="muted">{{ msg }}</p>
+  <p style="margin-top:16px"><a class="btn" href="{{ url_for('index') }}">返回首页</a></p>
+</div>
+{% endblock %}

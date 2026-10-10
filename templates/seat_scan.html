@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}座位签到 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>座位签到</h2>
+  <p style="font-size:16px">你当前所在座位：<b>{{ seat.area }} · {{ seat.seat_no }}</b></p>
+
+  {% if res and res.status == 'reserved' %}
+    <p class="muted">签到截止：{{ res.expire_time.strftime('%H:%M') }}（超时记违约并封禁 1 天）</p>
+    <form method="post"
+          action="{{ url_for('checkin', res_id=res.id, seat_code=seat.seat_code) }}">
+      <button class="btn btn-green" type="submit">确认签到</button>
+    </form>
+
+  {% elif res and res.status == 'checked_in' %}
+    <p><span class="tag tag-free">已签到</span> 你正在使用此座位，离开时记得签退。</p>
+
+  {% else %}
+    <p class="muted">你当前没有这个座位的有效预约。</p>
+    <p class="muted">请先在系统中预约 <b>{{ seat.seat_no }}</b> 座位后再扫码签到；扫其他座位的二维码是无法签到的。</p>
+  {% endif %}
+</div>
+{% endblock %}

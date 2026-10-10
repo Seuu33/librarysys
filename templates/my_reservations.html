@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}我的预约 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>我的座位预约记录</h2>
+  <table>
+    <tr><th>区域</th><th>座位</th><th>预约时间</th><th>签到截止</th>
+        <th>签到</th><th>签退</th><th>状态</th></tr>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.area }}</td><td>{{ r.seat_no }}</td>
+      <td>{{ r.start_time.strftime('%m-%d %H:%M') }}</td>
+      <td>{{ r.expire_time.strftime('%m-%d %H:%M') }}</td>
+      <td>{{ r.checkin_time.strftime('%H:%M') if r.checkin_time else '—' }}</td>
+      <td>{{ r.leave_time.strftime('%H:%M') if r.leave_time else '—' }}</td>
+      <td>
+        {% if r.status == 'reserved' %}<span class="tag tag-mine">待签到</span>
+        {% elif r.status == 'checked_in' %}<span class="tag tag-free">使用中</span>
+        {% elif r.status == 'expired' %}<span class="tag tag-busy">违约</span>
+        {% elif r.status == 'cancelled' %}<span class="tag tag-busy">已取消</span>
+        {% else %}<span class="tag tag-free">已完成</span>{% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">暂无预约记录</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

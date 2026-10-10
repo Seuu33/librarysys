@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}管理总览 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>当前座位占用（{{ active | length }} 个）</h2>
+  <table>
+    <tr><th>用户</th><th>区域</th><th>座位</th><th>状态</th><th>预约时间</th><th>签到截止</th></tr>
+    {% for r in active %}
+    <tr>
+      <td>{{ r.username }}</td><td>{{ r.area }}</td><td>{{ r.seat_no }}</td>
+      <td>{% if r.status == 'checked_in' %}<span class="tag tag-free">使用中</span>
+          {% else %}<span class="tag tag-mine">待签到</span>{% endif %}</td>
+      <td>{{ r.start_time.strftime('%m-%d %H:%M') }}</td>
+      <td>{{ r.expire_time.strftime('%H:%M') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="muted">当前无占用</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h2>全部用户</h2>
+  <table>
+    <tr><th>ID</th><th>用户名</th><th>角色</th><th>积分</th><th>状态</th><th>注册时间</th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td><td>{{ u.username }}</td>
+      <td>{{ '管理员' if u.role == 'admin' else '读者' }}</td>
+      <td>{{ u.points }}</td>
+      <td>{% if u.banned_until and u.banned_until > now %}
+          <span class="tag tag-busy">封禁至 {{ u.banned_until.strftime('%m-%d %H:%M') }}</span>
+          {% else %}<span class="tag tag-free">正常</span>{% endif %}</td>
+      <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

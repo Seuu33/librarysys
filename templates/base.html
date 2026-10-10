@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}图书馆管理系统{% endblock %}</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Microsoft YaHei",sans-serif; background:#f5f6fa; color:#2c3e50; }
+  a { color:#3498db; text-decoration:none; }
+  header { background:#2c3e50; color:#fff; padding:0 24px; display:flex;
+           align-items:center; height:56px; }
+  header .logo { font-size:18px; font-weight:bold; margin-right:32px; }
+  header nav a { color:#dfe6e9; margin-right:18px; font-size:14px; }
+  header .user { margin-left:auto; font-size:14px; }
+  header .user a { color:#74b9ff; margin-left:12px; }
+  main { max-width:1080px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border-radius:8px; padding:20px 24px; margin-bottom:20px;
+          box-shadow:0 1px 3px rgba(0,0,0,.08); }
+  h2 { font-size:18px; margin-bottom:16px; border-left:4px solid #3498db; padding-left:10px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { padding:9px 10px; border-bottom:1px solid #ecf0f1; text-align:left; }
+  th { background:#f8f9fb; color:#7f8c8d; font-weight:600; }
+  .btn { display:inline-block; padding:6px 14px; border:none; border-radius:4px;
+         cursor:pointer; font-size:13px; background:#3498db; color:#fff; }
+  .btn-green { background:#27ae60; }
+  .btn-red { background:#e74c3c; }
+  .btn-gray { background:#95a5a6; }
+  .btn[disabled] { background:#bdc3c7; cursor:not-allowed; }
+  input { width:100%; padding:9px 12px; border:1px solid #dcdde1; border-radius:4px;
+          font-size:14px; }
+  .form-row { margin-bottom:14px; }
+  .form-row label { display:block; margin-bottom:5px; font-size:13px; color:#636e72; }
+  .flash { padding:10px 16px; border-radius:6px; margin-bottom:12px; font-size:14px; }
+  .flash.ok { background:#e8f8f0; color:#27ae60; border:1px solid #a9dfbf; }
+  .flash.error { background:#fdedec; color:#e74c3c; border:1px solid #f5b7b1; }
+  .flash.warn { background:#fef9e7; color:#b7950b; border:1px solid #f9e79f; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:12px; }
+  .tag-free { background:#e8f8f0; color:#27ae60; }
+  .tag-busy { background:#fdedec; color:#e74c3c; }
+  .tag-mine { background:#eaf2fd; color:#2980b9; }
+  .seat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px; }
+  .seat { border:2px solid #27ae60; border-radius:8px; padding:10px 4px;
+          text-align:center; font-size:13px; }
+  .seat.occupied { border-color:#e74c3c; background:#fdedec; color:#c0392b; }
+  .seat.mine { border-color:#2980b9; background:#eaf2fd; }
+  .muted { color:#95a5a6; font-size:13px; }
+  .inline-form { display:inline; }
+  .search-bar { display:flex; gap:10px; margin-bottom:16px; }
+  .search-bar input { flex:1; }
+  .auth-box { max-width:380px; margin:60px auto; }
+  .medal { color:#e67e22; font-weight:bold; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">📚 图书馆管理系统</div>
+  {% if me %}
+  <nav>
+    <a href="{{ url_for('index') }}">图书浏览</a>
+    <a href="{{ url_for('seats') }}">座位预约</a>
+    <a href="{{ url_for('leaderboard') }}">积分榜</a>
+    <a href="{{ url_for('my_borrows') }}">我的借阅</a>
+    <a href="{{ url_for('my_reservations') }}">我的预约</a>
+    {% if me.role == 'admin' %}
+      <a href="{{ url_for('admin_books') }}">图书管理</a>
+      <a href="{{ url_for('admin_overview') }}">管理总览</a><a href="{{ url_for('seat_codes') }}">座位二维码</a>
+    {% endif %}
+  </nav>
+  <div class="user">
+    {{ me.username }}（{{ '管理员' if me.role == 'admin' else '读者' }} · 积分 {{ me.points }}）
+    <a href="{{ url_for('logout') }}">退出</a>
+  </div>
+  {% endif %}
+</header>
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

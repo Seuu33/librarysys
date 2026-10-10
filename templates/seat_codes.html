@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}座位二维码 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>座位签到二维码（打印后贴到对应座位）</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:24px">
+    {% for it in items %}
+    <div style="text-align:center;border:1px solid #ddd;padding:12px;border-radius:8px">
+      <img src="data:image/png;base64,{{ it.b64 }}" width="140" height="140"
+           alt="{{ it.seat.seat_no }}">
+      <div style="font-weight:bold;margin-top:6px">{{ it.seat.area }} · {{ it.seat.seat_no }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

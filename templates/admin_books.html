@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}图书管理 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>图书管理 <a class="btn" style="float:right"
+      href="{{ url_for('admin_book_new') }}">+ 新增图书</a></h2>
+  <table>
+    <tr><th>ID</th><th>书名</th><th>作者</th><th>出版社</th><th>数量</th>
+        <th>余量</th><th>位置</th><th>操作</th></tr>
+    {% for b in books %}
+    <tr>
+      <td>{{ b.id }}</td><td>{{ b.title }}</td><td>{{ b.author }}</td>
+      <td>{{ b.publisher }}</td><td>{{ b.total }}</td><td>{{ b.remaining }}</td>
+      <td>{{ b.location }}</td>
+      <td>
+        <a class="btn" href="{{ url_for('admin_book_edit', book_id=b.id) }}">编辑</a>
+        <form class="inline-form" method="post"
+              action="{{ url_for('admin_book_delete', book_id=b.id) }}"
+              onsubmit="return confirm('确定删除《{{ b.title }}》？')">
+          <button class="btn btn-red" type="submit">删除</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" class="muted">暂无图书</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

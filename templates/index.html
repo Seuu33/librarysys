@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}图书浏览 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>馆藏图书</h2>
+  <form class="search-bar" method="get">
+    <input type="text" name="kw" value="{{ kw }}" placeholder="按书名 / 作者 / 出版社搜索">
+    <button class="btn" type="submit">搜索</button>
+  </form>
+  <table>
+    <tr><th>书名</th><th>作者</th><th>出版社</th><th>数量</th><th>余量</th><th>位置</th><th>操作</th></tr>
+    {% for b in books %}
+    <tr>
+      <td>{{ b.title }}</td><td>{{ b.author }}</td><td>{{ b.publisher }}</td>
+      <td>{{ b.total }}</td>
+      <td>{% if b.remaining > 0 %}{{ b.remaining }}{% else %}
+          <span class="tag tag-busy">已借完</span>{% endif %}</td>
+      <td>{{ b.location }}</td>
+      <td>
+        {% if not me %}
+          <a class="btn btn-gray" href="{{ url_for('login') }}">登录后借阅</a>
+        {% elif me.role == 'admin' %}
+          <span class="muted">仅读者可借</span>
+        {% elif b.id in my_borrowed_ids %}
+          <span class="tag tag-mine">已借阅</span>
+        {% elif b.remaining > 0 %}
+          <form class="inline-form" method="post"
+                action="{{ url_for('borrow', book_id=b.id) }}">
+            <button class="btn btn-green" type="submit">借阅</button>
+          </form>
+        {% else %}
+          <button class="btn" disabled>借阅</button>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">暂无图书，请管理员先录入</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}登录 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card auth-box">
+  <h2>登录</h2>
+  <form method="post">
+    <div class="form-row"><label>用户名</label>
+      <input type="text" name="username" required autofocus></div>
+    <div class="form-row"><label>密码</label>
+      <input type="password" name="password" required></div>
+    <button class="btn" type="submit" style="width:100%">登 录</button>
+  </form>
+  <p class="muted" style="margin-top:14px">没有账号？<a href="{{ url_for('register') }}">去注册</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}我的借阅 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>我的借阅记录</h2>
+  <table>
+    <tr><th>书名</th><th>作者</th><th>位置</th><th>借出时间</th>
+        <th>归还时间</th><th>状态</th><th>操作</th></tr>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.title }}</td><td>{{ r.author }}</td><td>{{ r.location }}</td>
+      <td>{{ r.borrow_time.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ r.return_time.strftime('%Y-%m-%d %H:%M') if r.return_time else '—' }}</td>
+      <td>{% if r.status == 'borrowed' %}<span class="tag tag-mine">借阅中</span>
+          {% else %}<span class="tag tag-free">已归还</span>{% endif %}</td>
+      <td>
+        {% if r.status == 'borrowed' %}
+        <form class="inline-form" method="post"
+              action="{{ url_for('return_book', borrow_id=r.id) }}">
+          <button class="btn btn-green" type="submit">归还</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">暂无借阅记录</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ '编辑' if book else '新增' }}图书 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card" style="max-width:560px">
+  <h2>{{ '编辑图书' if book else '新增图书' }}</h2>
+  <form method="post">
+    <div class="form-row"><label>书名 *</label>
+      <input type="text" name="title" required value="{{ book.title if book else '' }}"></div>
+    <div class="form-row"><label>作者 *</label>
+      <input type="text" name="author" required value="{{ book.author if book else '' }}"></div>
+    <div class="form-row"><label>出版社 *</label>
+      <input type="text" name="publisher" required
+             value="{{ book.publisher if book else '' }}"></div>
+    <div class="form-row"><label>总数量 *</label>
+      <input type="number" name="total" required min="0"
+             value="{{ book.total if book else 1 }}"></div>
+    <div class="form-row"><label>余量（不能超过总数量）*</label>
+      <input type="number" name="remaining" required min="0"
+             value="{{ book.remaining if book else '' }}"></div>
+    <div class="form-row"><label>馆藏位置 *</label>
+      <input type="text" name="location" required
+             placeholder="如：三楼A区-05架" value="{{ book.location if book else '' }}"></div>
+    <button class="btn" type="submit">保 存</button>
+    <a class="btn btn-gray" href="{{ url_for('admin_books') }}">取消</a>
+  </form>
+</div>
+{% endblock %}

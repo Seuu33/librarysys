@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}注册 - 图书馆管理系统{% endblock %}
+{% block content %}
+<div class="card auth-box">
+  <h2>注册读者账号</h2>
+  <form method="post">
+    <div class="form-row"><label>用户名</label>
+      <input type="text" name="username" required autofocus></div>
+    <div class="form-row"><label>密码（至少 6 位）</label>
+      <input type="password" name="password" required minlength="6"></div>
+    <div class="form-row"><label>确认密码</label>
+      <input type="password" name="password2" required minlength="6"></div>
+    <button class="btn" type="submit" style="width:100%">注 册</button>
+  </form>
+  <p class="muted" style="margin-top:14px">已有账号？<a href="{{ url_for('login') }}">去登录</a></p>
+</div>
+{% endblock %}
